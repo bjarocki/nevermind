@@ -21,7 +21,9 @@ class InotifierEventHandler(pyinotify.ProcessEvent):
         sf = File(event.pathname)
         sf.load(StorageDB.get(event.pathname))
 
-        if not sf.path or lf.mtime != sf.mtime:
+        # for sake of POC just compare _rounded_ mtime to decide
+        # if this is a new file or one rsynced
+        if not sf.path or int(lf.mtime) != int(sf.mtime):
             print('Storing file in DB: local mtime: {} / DB mtime: {}'.format(lf.mtime, sf.mtime))
             StorageDB.set(lf.storage_object)
         print(lf.storage_object)
