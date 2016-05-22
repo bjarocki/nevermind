@@ -96,7 +96,7 @@ class File:
                'source_node': self.source_node,
                'synced_nodes': self.synced_nodes,
                'updated': self.updated,
-               'mtime': self.mtime,
+               'mtime': int(self.mtime),
                'size': self.size,
                'md5': self.md5
         }
