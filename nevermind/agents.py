@@ -18,7 +18,8 @@ class InotifierEventHandler(pyinotify.ProcessEvent):
     def process_IN_CLOSE_WRITE(self, event):
         print "CLOSE_WRITE event:", event.pathname
         lf = File(event.pathname)
-        sf = File.load(StorageDB.get(event.pathname))
+        sf = File(event.pathname)
+        sf.load(StorageDB.get(event.pathname))
         if not sf.path or lf.mtime != sf.mtime:
             print('Storing file in DB')
             StorageDB.set(lf.storage_object)
@@ -47,8 +48,7 @@ class InotifierAgent:
         if 'nt' not in self.__dict__:
             self.nt = pyinotify.Notifier(
                     self.watch_manager,
-                    self.event_handler
-                )
+                    self.event_handler)
         return self.nt
 
     @property

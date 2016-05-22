@@ -60,13 +60,6 @@ class File:
         self.stat = os.stat(path)
         self.data = {}
 
-    @classmethod
-    def load(cls, data):
-        if data:
-            cls.data = data
-            cls.path = data.get('path')
-        return cls
-
     @property
     def size(self):
         return self.data.get('size') or self.stat.st_size
@@ -107,3 +100,10 @@ class File:
                'size': self.size,
                'md5': self.md5
         }
+
+    def load(self, data):
+        if data:
+            self.data = data
+            self.path = data.get('path')
+        else:
+            self.path = None
