@@ -20,7 +20,10 @@ class InotifierEventHandler(pyinotify.ProcessEvent):
         lf = File(event.pathname)
         sf = File(event.pathname)
         sf.load(StorageDB.get(event.pathname))
-        if not sf.path or lf.mtime != sf.mtime:
+
+        # @todo: comparing size is not enough
+        #        let's just keep like this for now as an POC
+        if not sf.path or lf.size != sf.size:
             print('Storing file in DB')
             StorageDB.set(lf.storage_object)
         print(lf.storage_object)
