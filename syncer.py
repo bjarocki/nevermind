@@ -9,6 +9,12 @@ cursor = StorageDB.changes
 
 for data in cursor:
     sf = data.get('new_val')
+
+    # in case I delete records from DB and this is actually empty document
+    # Normally this should not happen
+    if not sf:
+        continue
+
     path = sf.get('path')
 
     if not sf['synced_nodes'].get(socket.gethostname()):
