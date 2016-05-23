@@ -108,6 +108,10 @@ class File:
         if self.data.get('md5'):
             return self.data.get('md5')
 
+        # let's do dont calculate md5 multiple time here
+        if 'md5sum' in self.__dict__:
+            return self.md5sum
+
         p = subprocess.Popen('md5sum {}'.format(self.path), stdout=subprocess.PIPE, shell=True)
         (output, err) = p.communicate()
 
@@ -118,9 +122,11 @@ class File:
         match = re.match('^(?P<md5sum>\S+).*', output)
 
         if match:
-            return match.group('md5sum')
+            self.md5sum = match.group('md5sum')
         else:
             return None
+
+        return self.md5sum
 
     @property
     def updated(self):
