@@ -61,6 +61,7 @@ class Queue:
     def __init__(self, conf):
         self.conf = conf
         self.client = Client([':'.join([self.host, str(self.port)])])
+        self.client.connect()
 
     @property
     def host(self):
