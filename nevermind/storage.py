@@ -1,8 +1,9 @@
 import os
-import uuid
 import time
 import socket
 import json
+import subprocess
+import re
 import rethinkdb as r
 from rethinkdb.errors import RqlRuntimeError
 from pydisque.client import Client
@@ -103,8 +104,22 @@ class File:
 
     @property
     def md5(self):
-        # let's just fake this for now
-        return self.data.get('md5') or str(uuid.uuid4())
+        if self.data.get('md5'):
+            return self.data.get('md5')
+
+        p = subprocess.Popen('md5sum {}'.format(self.path), stdout=subprocess.PIPE, shell=True)
+        (output, err) = p.communicate()
+
+        if p.wait() > 0:
+            return None
+
+        # let's grab the md5sum string
+        match = re.match('^(?P<md5sum>\S+).*', output)
+
+        if match:
+            return match.group('md5sum')
+        else:
+            return None
 
     @property
     def updated(self):
