@@ -88,8 +88,20 @@ class Queue:
 class File:
     def __init__(self, path):
         self.path = path
-        self.stat = os.stat(path)
         self.data = {}
+
+    @property
+    def exists(self):
+        return os.path.isfile(self.path)
+
+    @property
+    def stat(self):
+        if 'filestat' in self.__dict__:
+            return self.filestat
+
+        self.filestat = os.stat(self.path)
+
+        return self.filestat
 
     @property
     def size(self):

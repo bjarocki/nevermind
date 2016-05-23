@@ -117,7 +117,7 @@ class Worker:
         lf = File(path)
 
         # compare md5 with what we have in the DB
-        if lf.md5 != metadata.get('md5'):
+        if not lf.exists or lf.md5 != metadata.get('md5'):
             print('Getting the file with rsync: local md5: {} / DB md5: {}'.format(lf.md5, metadata.get('md5')))
             source_node = metadata.get('source_node')
 
