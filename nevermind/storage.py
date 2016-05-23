@@ -60,7 +60,7 @@ class DB:
 class Queue:
     def __init__(self, conf):
         self.conf = conf
-        self.client = Client([':'.join([self.host, self.port])])
+        self.client = Client([':'.join([self.host, str(self.port)])])
 
     @property
     def host(self):
