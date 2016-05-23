@@ -2,8 +2,10 @@ import os
 import uuid
 import time
 import socket
+import json
 import rethinkdb as r
 from rethinkdb.errors import RqlRuntimeError
+from pydisque.client import Client
 
 
 class DB:
@@ -52,6 +54,33 @@ class DB:
                 data,
                 conflict="replace"
             ).run(self.conn)
+
+
+class Queue:
+    def __init__(self, conf):
+        self.conf = conf
+        self.client = Client([':'.join([self.host, self.port])])
+
+    @property
+    def host(self):
+        return self.conf.get('host') or 'localhost'
+
+    @property
+    def port(self):
+        return self.conf.get('port') or 7711
+
+    @property
+    def queue(self):
+        return self.conf.get('queue') or 'downloader'
+
+    def get(self):
+        return self.client.get_job([self.queue])
+
+    def add(self, job):
+        return self.client.add_job(self.queue, json.dumps(job), timeout=1000)
+
+    def ack(self, job_id):
+        return self.client.ack_job(job_id)
 
 
 class File:
