@@ -17,7 +17,9 @@ for data in cursor:
         continue
 
     # store job in a queue
-    jobid = DownloaderQueue.add(sf)
+    jobid = DownloaderQueue.add({
+        'type': 'cluster_update',
+        'metadata': sf})
 
     # let's just print the jobid for now.
     print(jobid)
